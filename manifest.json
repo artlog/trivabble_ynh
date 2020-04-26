@@ -6,7 +6,7 @@
         "en": "a network Scrabble® game free play not enforcing rules",
         "fr": "un jeu de Scrabble® en jeu libre, à l'utilisateur d'appliquer les règles."
     },
-    "version": "1.v20200425.3~ynh1",
+    "version": "1.test-v202004262313-ynh1",
     "url": "https://trivabble.1s.fr/",
     "license": "AGPL-3.0-or-later",
     "maintainer": {
