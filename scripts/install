@@ -29,8 +29,8 @@ path_url=$YNH_APP_ARG_PATH
 admin=$YNH_APP_ARG_ADMIN
 is_public=$YNH_APP_ARG_IS_PUBLIC
 language=$YNH_APP_ARG_LANGUAGE
-# this is no password
-#password=$YNH_APP_ARG_PASSWORD
+
+# there is no password
 
 ### If it's a multi-instance app, meaning it can be installed several times independently
 ### The id of the app as stated in the manifest is available as $YNH_APP_ID
@@ -124,8 +124,11 @@ ynh_script_progression --message="Setting up source files..." --time --weight=1
 ### `ynh_setup_source` use the file conf/app.src
 
 ynh_app_setting_set --app=$app --key=final_path --value=$final_path
+
+git clone --depth 1 -b $trivabble_git_tag $trivabble_git_url $final_path
+
 # Download, check integrity, uncompress and patch the source from app.src
-ynh_setup_source --dest_dir="$final_path"
+# ynh_setup_source --dest_dir="$final_path"
 
 #=================================================
 # NGINX CONFIGURATION
