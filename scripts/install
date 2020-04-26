@@ -220,7 +220,7 @@ ynh_script_progression --message="Create client configuration for this app path 
 
 cat <<EOF >$final_path/config.js
 window.TrivabbleConf = {
-    API_ENTRY_POINT: "$path_url/:trivabble"
+    APP_PATH: "$path_url"
 }
 EOF
 
