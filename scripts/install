@@ -128,6 +128,8 @@ ynh_script_progression --message="Setting up source files..." --time --weight=1
 
 ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 
+# FIXME git usage to replace with ?
+# FIXME there is a bin/setup_prod.sh to study
 git clone --depth 1 -b $trivabble_git_tag $trivabble_git_url $final_path
 
 # Download, check integrity, uncompress and patch the source from app.src
@@ -211,7 +213,16 @@ fi
 # MODIFY A CONFIG FILE
 #=================================================
 
-# not used ( yet ? )
+
+# TWEAK trivabble client configuration
+
+ynh_script_progression --message="Create client configuration for this app path $path_url" --time --weight=1
+
+cat <<EOF >$final_path/config.js
+window.TrivabbleConf = {
+    API_ENTRY_POINT: "$path_url/:trivabble"
+}
+EOF
 
 ### `ynh_replace_string` is used to replace a string in a file.
 ### (It's compatible with sed regular expressions syntax)
@@ -227,7 +238,7 @@ fi
 ### you can make a backup of this file before modifying it again if the admin had modified it.
 
 # Calculate and store the config file checksum into the app settings
-ynh_store_file_checksum --file="$final_path/CONFIG_FILE"
+ynh_store_file_checksum --file="$final_path/config.js"
 
 #=================================================
 # GENERIC FINALIZATION
@@ -318,6 +329,8 @@ then
 	# unprotected_uris allows SSO credentials to be passed anyway.
 	ynh_app_setting_set --app=$app --key=unprotected_uris --value="/"
 fi
+
+
 
 #=================================================
 # RELOAD NGINX
