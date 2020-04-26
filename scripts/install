@@ -208,10 +208,12 @@ fi
 # MODIFY A CONFIG FILE
 #=================================================
 
+# not used ( yet ? )
+
 ### `ynh_replace_string` is used to replace a string in a file.
 ### (It's compatible with sed regular expressions syntax)
 
-ynh_replace_string --match_string="match_string" --replace_string="replace_string" --target_file="$final_path/CONFIG_FILE"
+### ynh_replace_string --match_string="match_string" --replace_string="replace_string" --target_file="$final_path/CONFIG_FILE"
 
 #=================================================
 # STORE THE CONFIG FILE CHECKSUM
@@ -265,7 +267,7 @@ ynh_use_logrotate
 ###		- Remove the section "REMOVE SERVICE FROM ADMIN PANEL" in the remove script
 ###		- As well as the section "ADVERTISE SERVICE IN ADMIN PANEL" in the restore script
 
-yunohost service add $app --description "A short description of the app" --log "/var/log/$app/$app.log"
+yunohost service add $app --description "Trivabble Scrabble® game" --log "/var/log/$app/$app.log"
 
 ### With YunoHost 3.8 you will then be able to: 
 ### - specify a list of ports that needs to be publicly exposed (c.f. --needs_exposed_ports) 
