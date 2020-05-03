@@ -153,6 +153,14 @@ WORKING_DIRECTORY=$src_filename
 PROD_PUBLIC_DIR=$final_path/public
 PROD_SERVER_DIR=$final_path/server
 
+# brainless hack
+for subdir in public server
+do
+    if [[ ! -d $final_path/$subdir ]] ; then
+	mkdir -p $final_path/$subdir
+    fi
+done
+
 rsync -avp --delete --exclude 'config.js' "$WORKING_DIRECTORY/public/" "$PROD_PUBLIC_DIR/"
 rsync -avp --delete --exclude 'config.js' "$WORKING_DIRECTORY/server/" "$PROD_SERVER_DIR/"
 
