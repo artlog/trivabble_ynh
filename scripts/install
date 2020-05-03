@@ -44,8 +44,8 @@ language=$YNH_APP_ARG_LANGUAGE
 ### db names, ...
 app=$YNH_APP_INSTANCE_NAME
 
-local username=$app
-local groupname=$app
+username=$app
+groupname=$app
 
 #=================================================
 # CHECK IF THE APP CAN BE INSTALLED WITH THESE ARGS
