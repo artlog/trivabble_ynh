@@ -9,9 +9,6 @@
 source _common.sh
 source /usr/share/yunohost/helpers
 
-local username=$app
-local groupname=$app
-
 #=================================================
 # MANAGE SCRIPT FAILURE
 #=================================================
@@ -46,6 +43,9 @@ language=$YNH_APP_ARG_LANGUAGE
 ### guaranteed to be unique. This is a good unique identifier to define installation path,
 ### db names, ...
 app=$YNH_APP_INSTANCE_NAME
+
+local username=$app
+local groupname=$app
 
 #=================================================
 # CHECK IF THE APP CAN BE INSTALLED WITH THESE ARGS
