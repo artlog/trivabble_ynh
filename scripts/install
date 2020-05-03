@@ -250,7 +250,7 @@ fi
 
 ynh_script_progression --message="Create client configuration for this app path $path_url" --time --weight=1
 
-cat <<EOF >$final_path/config.js
+cat <<EOF >$final_path/public/config.js
 window.TrivabbleConf = {
     APP_PATH: "$path_url"
 }
