@@ -131,18 +131,15 @@ ynh_script_progression --message="Setting up source files..." --time --weight=1
 
 ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 
+# temporary intermediate directory since it contains more files than needed
+src_filename=$trivabble_git_tag.tmp_src
 
-# FIXME git usage to replace with ?
-# FIXME there is a bin/setup_prod.sh to study
-src_filename=$trivabble_git_tag.git_clone
-git clone --depth 1 -b $trivabble_git_tag $trivabble_git_url $src_filename
-pushd $src_filename
-git checkout $trivabble_git_tag
-popd
+# Download, check integrity, uncompress and patch the source from app.src
+ynh_setup_source --dest_dir="$src_filename"
 
 # now source is within $src_filename
-if [[ ! -d $src_filename/.git ]] ; then
-    ynh_die "expected .git directory not found in $pwd/$src_filename"
+if [[ ! -d $src_filename/public ]] ; then
+    ynh_die "expected public directory not found in $pwd/$src_filename"
 fi
 
 # deliver it to $final_path ( hack copy subpart of bin/upgrade-prod.sh )
@@ -153,16 +150,13 @@ WORKING_DIRECTORY=$src_filename
 PROD_PUBLIC_DIR=$final_path/public
 PROD_SERVER_DIR=$final_path/server
 
-# brainless hack
-for subdir in public server
-do
-    if [[ ! -d $final_path/$subdir ]] ; then
-	mkdir -p $final_path/$subdir
-    fi
-done
+mkdir -p $PROD_PUBLIC_DIR
+mkdir -p $PROD_SERVER_DIR
 
 rsync -avp --delete --exclude 'config.js' "$WORKING_DIRECTORY/public/" "$PROD_PUBLIC_DIR/"
 rsync -avp --delete --exclude 'config.js' "$WORKING_DIRECTORY/server/" "$PROD_SERVER_DIR/"
+
+rm -rf $src_filename
 
 # Download, check integrity, uncompress and patch the source from app.src
 # ynh_setup_source --dest_dir="$final_path"
