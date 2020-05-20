@@ -1,8 +1,11 @@
 
 - WORK IN PROGRESS -
 
-Not yet integrated - INITIAL COMMIT -
+Current status : can install but UPGRADE IS NOT SUPPORTED.
 
+to upgrade you have to remove previous application and add new one
+
+trivabble app  for yunohost development wiki page ( in french : https://serveur.slv-valbonne.fr/dokuwiki/slvpartage:trivabbleyunohost )
 
 [![Integration level](https://dash.yunohost.org/integration/trivabble.svg)](https://dash.yunohost.org/appci/app/trivabble)  
 [![Install trivabble with YunoHost](https://install-app.yunohost.org/install-with-yunohost.png)](https://install-app.yunohost.org/?app=trivabble)

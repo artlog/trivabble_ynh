@@ -123,43 +123,8 @@ ynh_install_app_dependencies $pkg_dependencies
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
-ynh_script_progression --message="Setting up source files..." --time --weight=1
 
-### `ynh_setup_source` is used to install an app from a zip or tar.gz file,
-### downloaded from an upstream source, like a git repository.
-### `ynh_setup_source` use the file conf/app.src
-
-ynh_app_setting_set --app=$app --key=final_path --value=$final_path
-
-# temporary intermediate directory since it contains more files than needed
-src_filename=$trivabble_git_tag.tmp_src
-
-# Download, check integrity, uncompress and patch the source from app.src
-ynh_setup_source --dest_dir="$src_filename"
-
-# now source is within $src_filename
-if [[ ! -d $src_filename/public ]] ; then
-    ynh_die "expected public directory not found in $pwd/$src_filename"
-fi
-
-# deliver it to $final_path ( hack copy subpart of bin/upgrade-prod.sh )
-
-echo "Sending to production..."
-
-WORKING_DIRECTORY=$src_filename
-PROD_PUBLIC_DIR=$final_path/public
-PROD_SERVER_DIR=$final_path/server
-
-mkdir -p $PROD_PUBLIC_DIR
-mkdir -p $PROD_SERVER_DIR
-
-rsync -avp --delete --exclude 'config.js' "$WORKING_DIRECTORY/public/" "$PROD_PUBLIC_DIR/"
-rsync -avp --delete --exclude 'config.js' "$WORKING_DIRECTORY/server/" "$PROD_SERVER_DIR/"
-
-rm -rf $src_filename
-
-# Download, check integrity, uncompress and patch the source from app.src
-# ynh_setup_source --dest_dir="$final_path"
+source unpackinstall
 
 #=================================================
 # NGINX CONFIGURATION
@@ -275,10 +240,9 @@ ynh_store_file_checksum --file="$final_path/config.js"
 ### For security reason, any app should set the permissions to root: before anything else.
 ### Then, if write authorization is needed, any access should be given only to directories
 ### that really need such authorization.
+chown -R root $final_path
 
 # Set permissions to app files
-chown -R root: $final_path
-
 chown -R www-data:www-data $final_path
 chown -R $username:$groupname $final_path/server
 
