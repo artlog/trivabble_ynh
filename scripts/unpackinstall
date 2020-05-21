@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
@@ -15,9 +17,17 @@ src_filename=$trivabble_git_tag.tmp_src
 # Download, check integrity, uncompress and patch the source from app.src
 ynh_setup_source --dest_dir="$src_filename"
 
-# now source is within $src_filename
-if [[ ! -d $src_filename/public ]] ; then
-    ynh_die "expected public directory not found in $pwd/$src_filename"
+# required to build i10n client support 
+pushd "$src_filename"
+make
+popd
+
+# check that l10n build succeeded
+if [[ ! -d $src_filename/public/l10n/js ]] ; then
+    echo "list content of  $src_filename for forensics" >&2
+    # to have some trace  of what did fail
+    find  $src_filename/
+    ynh_die "expected public js directory for i10n not found in $(pwd)/$src_filename"
 fi
 
 # deliver it to $final_path ( hack copy subpart of bin/upgrade-prod.sh )
