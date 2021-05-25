@@ -1,0 +1,69 @@
+#!/bin/bash
+
+
+if [[ ! -d ../conf ]]
+then
+    echo "[ERROR] $0 expected to be within build directory" >&2
+    exit 1
+fi
+
+commonconf=../scripts/_common.sh
+
+if [[ ! -f $commonconf ]]
+then
+    echo "[ERROR] expect to find $commonconf where trivabble_git_url znd trivabble_git_tag are defined" >&2
+    exit 1
+fi
+
+. $commonconf
+
+echo $trivabble_git_url
+echo $trivabble_git_tag
+
+source_tgz=trivabble-$trivabble_git_tag.tar.gz
+
+# gitlab case take care of reming .git at end of  $trivabble_git_url
+SOURCE_URL=${trivabble_git_url/.git/}/-/archive/$trivabble_git_tag/$source_tgz
+
+if [[ ! -d cache ]]
+then
+    mkdir cache
+fi
+pushd cache
+if [[ ! -f $source_tgz ]]
+then
+    if wget $SOURCE_URL
+    then
+	echo "[INFO] $source_tgz retrieved"
+    else
+	echo "[FATAL] can't retrieve $source_tgz frm $SOURCE_URL" >&2
+	exit 1
+    fi   
+fi
+popd
+
+SOURCE_SUM_PRG=sha256sum
+SOURCE_SUM=$($SOURCE_SUM_PRG cache/$source_tgz | awk '{ print $1 }')
+SOURCE_FORMAT=tar.gz
+SOURCE_IN_SUBDIR=true
+SOURCE_FILENAME=
+
+confappsrc=../conf/app.src
+cat <<EOF >$confappsrc
+SOURCE_URL=$SOURCE_URL
+SOURCE_SUM=$SOURCE_SUM
+SOURCE_SUM_PRG=$SOURCE_SUM_PRG
+SOURCE_FORMAT=$SOURCE_FORMAT
+SOURCE_IN_SUBDIR=$SOURCE_IN_SUBDIR
+SOURCE_FILENAME=
+EOF
+
+echo "[INFO] generated $confappsrc"
+
+manifest=../manifest.json
+
+if [[ -f $manifest ]]
+then
+    version=1.$trivabble_git_tag.ynh4
+    sed -i "s/\"version\": \".*\"/\"version\": \"$version\"/" $manifest
+fi
