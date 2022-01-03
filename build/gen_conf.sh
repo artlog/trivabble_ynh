@@ -1,5 +1,16 @@
 #!/bin/bash
 
+get_ynh_version_number()
+{
+    trivabble_ynh_git_tag=$(git tag -l --sort=-creatordate | head -n 1)
+    if [[ $trivabble_ynh_git_tag =~ .*\.ynh([1-9]*) ]]
+    then
+	ynh_number=$(( ${BASH_REMATCH[1]} + 1 ))
+	echo $ynh_number
+    else
+	echo "0"
+    fi
+}
 
 if [[ ! -d ../conf ]]
 then
@@ -34,7 +45,7 @@ if [[ ! -f $source_tgz ]]
 then
     if wget $SOURCE_URL
     then
-	echo "[INFO] $source_tgz retrieved"
+	echo "[INFO] $source_tgz retrieved" >&2
     else
 	echo "[FATAL] can't retrieve $source_tgz frm $SOURCE_URL" >&2
 	exit 1
@@ -64,6 +75,11 @@ manifest=../manifest.json
 
 if [[ -f $manifest ]]
 then
-    version=1.$trivabble_git_tag.ynh4
+    version=1.$trivabble_git_tag.ynh$(get_ynh_version_number)
+    trivabble_ynh_git_tag=$version
     sed -i "s/\"version\": \".*\"/\"version\": \"$version\"/" $manifest
+    echo "Once commint is done, please tag it with :"
+    echo "git tag $trivabble_ynh_git_tag"
+else
+    echo "[WARNING] Missing $manifest file. Can't update it" >&2
 fi

@@ -1,5 +1,5 @@
-SOURCE_URL=https://gitlab.com/raphj/trivabble/-/archive/prod-v20201017.1/trivabble-prod-v20201017.1.tar.gz
-SOURCE_SUM=2a094e5c322b2c2a245fbd9bef00e3eac43c718a0dca67a29f6a0f80974b865a
+SOURCE_URL=https://gitlab.com/raphj/trivabble/-/archive/prod-v20210805/trivabble-prod-v20210805.tar.gz
+SOURCE_SUM=5fb1baf0bf04d192adda476d2a0a209721f49e463e6ddc960215c0a92b52f9f4
 SOURCE_SUM_PRG=sha256sum
 SOURCE_FORMAT=tar.gz
 SOURCE_IN_SUBDIR=true
