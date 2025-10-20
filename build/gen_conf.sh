@@ -33,7 +33,7 @@ echo $trivabble_git_tag
 
 source_tgz=trivabble-$trivabble_git_tag.tar.gz
 
-# gitlab case take care of reming .git at end of  $trivabble_git_url
+# gitlab case take care of remin .git at end of  $trivabble_git_url
 SOURCE_URL=${trivabble_git_url/.git/}/-/archive/$trivabble_git_tag/$source_tgz
 
 if [[ ! -d cache ]]

@@ -1,5 +1,12 @@
+# Yunohost Application for Trivabble web application
 
-- WORK IN PROGRESS -
+This is the project to integrate the web application Trivabble into Yunohost.
+
+Authoritative official source for this repository is https://git.jakse.fr/artlog/trivabble_ynh
+
+/!\ Please use latest official source content, other repositories are not maintained in sync.
+
+# WORK IN PROGRESS 
 
 Current status : can install but UPGRADE IS NOT SUPPORTED.
 
