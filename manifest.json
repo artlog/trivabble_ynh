@@ -7,12 +7,12 @@
         "fr": "un jeu de Scrabble® en jeu libre, à l'utilisateur d'appliquer les règles."
     },
     "version": "1.prod-v20210805.ynh5",
-    "url": "https://trivabble.1s.fr/",
+    "url": "https://trivabble.org/",
     "license": "AGPL-3.0-or-later",
     "maintainer": {
         "name": "Philippe Lhardy",
         "email": "pl@artisanlogiciel.net",
-        "url": "https://www4.artisanlogiciel.net/blog"
+        "url": "https://www.artisanlogiciel.net"
     },
     "requirements": {
         "yunohost": ">= 3.5"

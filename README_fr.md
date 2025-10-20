@@ -1,4 +1,4 @@
-- Le contenu n'est pas encore prêt , seconde reprise du projet
+- Le contenu n'est pas encore prêt , troisième reprise du projet
 
 [![Niveau d'intégration](https://dash.yunohost.org/integration/trivabble.svg)](https://dash.yunohost.org/appci/app/trivabble)  
 [![Installer trivabble avec YunoHost](https://install-app.yunohost.org/install-with-yunohost.png)](https://install-app.yunohost.org/?app=trivabble)
