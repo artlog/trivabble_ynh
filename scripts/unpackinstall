@@ -11,30 +11,35 @@ ynh_script_progression --message="Setting up source files..." --time --weight=1
 
 ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 
+
 # temporary intermediate directory since it contains more files than needed
-src_filename=$trivabble_git_tag.tmp_src
+build_dest_dir=$trivabble_git_tag.tmp_src
 
 # Download, check integrity, uncompress and patch the source from app.src
-ynh_setup_source --dest_dir="$src_filename"
+ynh_setup_source --dest_dir="$build_dest_dir"
 
-# required to build i10n client support 
-pushd "$src_filename"
-make
-popd
+if [[ -d "$build_dest_dir" ]]
+then
+    # required to build i10n client support
+    pushd "$build_dest_dir"
+    ynh_script_progression --message="Start building from $(pwd) " --time --weight=1
+    make
+    popd
+fi
 
 # check that l10n build succeeded
-if [[ ! -d $src_filename/public/l10n/js ]] ; then
-    echo "list content of  $src_filename for forensics" >&2
+if [[ ! -d $build_dest_dir/public/l10n/js ]] ; then
+    echo "list content of  $build_dest_dir for forensics" >&2
     # to have some trace  of what did fail
-    find  $src_filename/
-    ynh_die "expected public js directory for i10n not found in $(pwd)/$src_filename"
+    find  $build_dest_dir/
+    ynh_die "expected public js directory for i10n not found in $(pwd)/$build_dest_dir"
 fi
 
 # deliver it to $final_path ( hack copy subpart of bin/upgrade-prod.sh )
 
 echo "Sending to production..."
 
-WORKING_DIRECTORY=$src_filename
+WORKING_DIRECTORY=$build_dest_dir
 PROD_PUBLIC_DIR=$final_path/public
 PROD_SERVER_DIR=$final_path/server
 
@@ -44,7 +49,7 @@ mkdir -p $PROD_SERVER_DIR
 rsync -avp --delete --exclude 'config.js' "$WORKING_DIRECTORY/public/" "$PROD_PUBLIC_DIR/"
 rsync -avp --delete --exclude 'config.js' "$WORKING_DIRECTORY/server/" "$PROD_SERVER_DIR/"
 
-rm -rf $src_filename
+rm -rf $build_dest_dir
 
 # Download, check integrity, uncompress and patch the source from app.src
 # ynh_setup_source --dest_dir="$final_path"

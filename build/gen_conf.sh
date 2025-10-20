@@ -31,10 +31,9 @@ fi
 echo $trivabble_git_url
 echo $trivabble_git_tag
 
-source_tgz=trivabble-$trivabble_git_tag.tar.gz
+source_tgz=$trivabble_git_tag.tar.gz
 
-# gitlab case take care of remin .git at end of  $trivabble_git_url
-SOURCE_URL=${trivabble_git_url/.git/}/-/archive/$trivabble_git_tag/$source_tgz
+SOURCE_URL=${trivabble_git_url/.git/}/archive/$source_tgz
 
 if [[ ! -d cache ]]
 then
@@ -78,7 +77,7 @@ then
     version=1.$trivabble_git_tag.ynh$(get_ynh_version_number)
     trivabble_ynh_git_tag=$version
     sed -i "s/\"version\": \".*\"/\"version\": \"$version\"/" $manifest
-    echo "Once commint is done, please tag it with :"
+    echo "Once commit is done, please tag it with :"
     echo "git tag $trivabble_ynh_git_tag"
 else
     echo "[WARNING] Missing $manifest file. Can't update it" >&2
