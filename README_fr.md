@@ -1,15 +1,22 @@
-- Le contenu n'est pas encore prêt , troisième reprise du projet
+
+  * Le contenu n'est pas encore prêt , troisième reprise du projet
+
+L'application n'a pas encore été soumise pour ^tre listée dans les applications yunohost.
 
 [![Niveau d'intégration](https://dash.yunohost.org/integration/trivabble.svg)](https://dash.yunohost.org/appci/app/trivabble)  
 [![Installer trivabble avec YunoHost](https://install-app.yunohost.org/install-with-yunohost.png)](https://install-app.yunohost.org/?app=trivabble)
 
 *[Read this readme in english.](./README.md)* 
 
-> *Ce package vous permet d'installer trivabble rapidement et simplement sur un serveur Yunohost.  
-Si vous n'avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) pour savoir comment l'installer et en profiter.*
+Ce paquet vous permet d'installer trivabble rapidement et simplement sur un serveur Yunohost.  
+
+Si vous n'avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) pour savoir comment l'installer et en profiter.
 
 ## Vue d'ensemble
-Description rapide de cette application.
+
+Ce projet permet l'integration de l'application Trivabble dans yunohost.
+
+Trivabble est un jeu libre et gratuit de Scrabble en réseau. Il fonctionne sur tablette, sur ordinateur classique et bientôt sur téléphone. Pas besoin d'installer quoi que ce soit, ça marche tout seul !
 
 **Version incluse:** 1.0
 
@@ -56,9 +63,8 @@ https://yunohost.org/packaging_apps
 
 ## Liens
 
- * Signaler un bug: https://github.com/YunoHost-Apps/trivabble_ynh/issues
- * Site de l'application: Lien vers le site officiel de cette application
- * Dépôt de l'application principale: Lien vers le dépôt officiel de l'application principale
+ * Site de l'application: Lien vers le site officiel de cette application https://git.jakse.fr/artlog/trivabble_ynh
+ * Dépôt de l'application principale: Lien vers le dépôt officiel de l'application principale https://git.jakse.fr/trivabble/trivabble
  * Site web YunoHost: https://yunohost.org/
 
 ---
@@ -66,12 +72,8 @@ https://yunohost.org/packaging_apps
 Informations pour les développeurs
 ----------------
 
-**Seulement si vous voulez utiliser une branche de test pour le codage, au lieu de fusionner directement dans la banche principale.**
-Merci de faire vos pull request sur la [branche testing](https://github.com/YunoHost-Apps/trivabble_ynh/tree/testing).
-
-Pour essayer la branche testing, procédez comme suit.
 ```
-sudo yunohost app install https://github.com/YunoHost-Apps/trivabble_ynh/tree/testing --debug
+sudo yunohost app install https://git.jakse.fr/artlog/trivabble_ynh --debug
 ou
-sudo yunohost app upgrade trivabble -u https://github.com/YunoHost-Apps/trivabble_ynh/tree/testing --debug
+sudo yunohost app upgrade trivabble -u https://git.jakse.fr/artlog/trivabble_ynh --debug
 ```
