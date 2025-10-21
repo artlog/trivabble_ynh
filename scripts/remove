@@ -14,8 +14,6 @@ source /usr/share/yunohost/helpers
 #=================================================
 ynh_script_progression --message="Loading installation settings..." --time --weight=1
 
-app=$YNH_APP_INSTANCE_NAME
-
 domain=$(ynh_app_setting_get --app=$app --key=domain)
 port=$(ynh_app_setting_get --app=$app --key=port)
 final_path=$(ynh_app_setting_get --app=$app --key=final_path)
@@ -42,20 +40,11 @@ ynh_script_progression --message="Stopping and removing the systemd service..." 
 ynh_config_remove_systemd
 
 #=================================================
-# REMOVE DEPENDENCIES
-#=================================================
-ynh_script_progression --message="Removing dependencies..." --time --weight=1
-
-# Remove metapackage and its dependencies
-ynh_apt_remove_dependencies
-
-#=================================================
 # REMOVE APP MAIN DIR
 #=================================================
 ynh_script_progression --message="Removing app main directory..." --time --weight=1
 
-# Remove the app directory securely
-ynh_safe_rm --file="$final_path"
+ynh_safe_rm "$final_path"
 
 #=================================================
 # REMOVE NGINX CONFIGURATION
@@ -98,13 +87,13 @@ ynh_config_remove_fail2ban
 #=================================================
 
 # Remove a cron file
-ynh_safe_rm --file="/etc/cron.d/$app"
+ynh_safe_rm "/etc/cron.d/$app"
 
 # Remove a directory securely
-ynh_safe_rm --file="/etc/$app/"
+ynh_safe_rm "/etc/$app/"
 
 # Remove the log files
-ynh_safe_rm --file="/var/log/$app/"
+ynh_safe_rm "/var/log/$app/"
 
 #=================================================
 # GENERIC FINALIZATION

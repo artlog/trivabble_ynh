@@ -52,9 +52,6 @@ window.TrivabbleConf = {
 }
 EOF
 
-# Calculate and store the config file checksum into the app settings
-ynh_store_file_checksum --file="$final_path/config.js"
-
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
