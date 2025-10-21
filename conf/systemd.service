@@ -6,8 +6,11 @@ After=network.target
 Type=simple
 User=__APP__
 Group=__APP__
-WorkingDirectory=__FINALPATH__/server
-ExecStart=/opt/node_n/n/versions/node/10/bin/node trivabble-server.js >> /var/log/__APP__/__APP__.log 2>&1
+Environment=NODE_ENV=production
+Environment=NODE_CONFIG_DIR=__INSTALL_DIR__/config
+Environment="PATH=__PATH_WITH_NODEJS__"
+ExecStart=__NODEJS_DIR__/node trivabble-server.js >> /var/log/__APP__/__APP__.log 2>&1
+WorkingDirectory=__INSTALL_DIR__/server
 
 [Install]
 WantedBy=multi-user.target

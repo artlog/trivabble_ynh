@@ -1,6 +1,4 @@
-
-
-61;7600;1c#!/bin/bash
+#!/bin/bash
 
 #=================================================
 # GENERIC START
@@ -15,6 +13,14 @@ source /usr/share/yunohost/helpers
 ### If the app provides an internal web server (or uses another application server such as uwsgi), the final path should be "/opt/yunohost/$app"
 final_path=/var/www/$app
 test ! -e "$final_path" || ynh_die --message="This path already contains a folder"
+
+# because __FINALPATH__ in nginx.conf
+finalpath=${final_path}
+install_dir=${final_path}
+# assuming $install_dir == $finalpath in systemd.service ?
+echo "$finalpath == $install_dir ?"
+username=${username:-$app}
+groupname=${groupname:-$app}
 
 #=================================================
 # MANAGE SCRIPT FAILURE
@@ -33,82 +39,8 @@ ynh_abort_if_errors
 
 source unpackinstall
 
-#=================================================
-# NGINX CONFIGURATION
-#=================================================
-ynh_script_progression --message="Configuring nginx web server..." --time --weight=1
-
-# Create a dedicated nginx config conf/nginx.conf
-ynh_config_add_nginx
-
-#=================================================
-# CREATE DEDICATED USER
-#=================================================
-ynh_script_progression --message="Configuring system user..." --time --weight=1
-
-# Create a system user
-ynh_system_user_create --username=$username
-
-#=================================================
-# SPECIFIC SETUP
-#=================================================
-# ...
-#=================================================
-
-#=================================================
-# SETUP SYSTEMD
-#=================================================
-ynh_script_progression --message="Configuring a systemd service..." --time --weight=1
-
-### `ynh_systemd_config` is used to configure a systemd script for an app.
-### It can be used for apps that use sysvinit (with adaptation) or systemd.
-### Have a look at the app to be sure this app needs a systemd script.
-### `ynh_systemd_config` will use the file conf/systemd.service
-### If you're not using these lines:
-###		- You can remove those files in conf/.
-###		- Remove the section "BACKUP SYSTEMD" in the backup script
-###		- Remove also the section "STOP AND REMOVE SERVICE" in the remove script
-###		- As well as the section "RESTORE SYSTEMD" in the restore script
-###		- And the section "SETUP SYSTEMD" in the upgrade script
-
-# Create a dedicated systemd config
-ynh_add_systemd_config
-
-#=================================================
-# SETUP APPLICATION WITH CURL
-#=================================================
-
-### Use these lines only if the app installation needs to be finalized through
-### web forms. We generally don't want to ask the final user,
-### so we're going to use curl to automatically fill the fields and submit the
-### forms.
-
 # Set right permissions for curl install
-chown -R $app: $final_path
-
-# Set the app as temporarily public for curl call
-ynh_script_progression --message="Configuring SSOwat..." --time --weight=1
-ynh_app_setting_set --app=$app --key=skipped_uris --value="/"
-# Reload SSOwat config
-yunohost app ssowatconf
-
-# Reload Nginx
-ynh_systemd_action --service_name=nginx --action=reload
-
-# Installation with curl
-ynh_script_progression --message="Finalizing installation..." --time --weight=1
-ynh_local_curl "/INSTALL_PATH" "key1=value1" "key2=value2" "key3=value3"
-
-# Remove the public access
-if [ $is_public -eq 0 ]
-then
-	ynh_app_setting_delete --app=$app --key=skipped_uris
-fi
-
-#=================================================
-# MODIFY A CONFIG FILE
-#=================================================
-
+chown -R $username $final_path
 
 # TWEAK trivabble client configuration
 
@@ -120,24 +52,24 @@ window.TrivabbleConf = {
 }
 EOF
 
-### `ynh_replace_string` is used to replace a string in a file.
-### (It's compatible with sed regular expressions syntax)
-
-### ynh_replace_string --match_string="match_string" --replace_string="replace_string" --target_file="$final_path/CONFIG_FILE"
-
-#=================================================
-# STORE THE CONFIG FILE CHECKSUM
-#=================================================
-
-### `ynh_store_file_checksum` is used to store the checksum of a file.
-### That way, during the upgrade script, by using `ynh_backup_if_checksum_is_different`,
-### you can make a backup of this file before modifying it again if the admin had modified it.
-
 # Calculate and store the config file checksum into the app settings
 ynh_store_file_checksum --file="$final_path/config.js"
 
 #=================================================
-# GENERIC FINALIZATION
+# NGINX CONFIGURATION
+#=================================================
+ynh_script_progression --message="Configuring nginx web server..." --time --weight=1
+
+# Create a dedicated nginx config conf/nginx.conf
+ynh_config_add_nginx
+
+ynh_config_add_systemd
+
+yunohost service add "$app" --description="Trivabble game web server service" --log="/var/log/$app/$app.log"
+
+mkdir -p "/var/log/$app"
+ynh_config_add_logrotate
+
 #=================================================
 # SECURE FILES AND DIRECTORIES
 #=================================================
@@ -152,90 +84,12 @@ chown -R www-data:www-data $final_path
 chown -R $username:$groupname $final_path/server
 
 #=================================================
-# SETUP LOGROTATE
-#=================================================
-ynh_script_progression --message="Configuring log rotation..." --time --weight=1
-
-### `ynh_use_logrotate` is used to configure a logrotate configuration for the logs of this app.
-### Use this helper only if there is effectively a log file for this app.
-### If you're not using this helper:
-###		- Remove the section "BACKUP LOGROTATE" in the backup script
-###		- Remove also the section "REMOVE LOGROTATE CONFIGURATION" in the remove script
-###		- As well as the section "RESTORE THE LOGROTATE CONFIGURATION" in the restore script
-###		- And the section "SETUP LOGROTATE" in the upgrade script
-
-# Use logrotate to manage application logfile(s)
-ynh_use_logrotate
-
-#=================================================
-# INTEGRATE SERVICE IN YUNOHOST
-#=================================================
-
-### `yunohost service add` integrates a service in YunoHost. It then gets 
-### displayed in the admin interface and through the others `yunohost service` commands.
-### (N.B. : this line only makes sense if the app adds a service to the system!)
-### If you're not using these lines:
-###		- You can remove these files in conf/.
-###		- Remove the section "REMOVE SERVICE FROM ADMIN PANEL" in the remove script
-###		- As well as the section "ADVERTISE SERVICE IN ADMIN PANEL" in the restore script
-
-yunohost service add $app --description "Trivabble game" --log "/var/log/$app/$app.log"
-
-### With YunoHost 3.8 you will then be able to: 
-### - specify a list of ports that needs to be publicly exposed (c.f. --needs_exposed_ports) 
-###   which will then be checked by YunoHost's diagnosis system
-### - specify a custom command to check the status of the service (c.f. --test_status)
-###   though it's only needed for weird cases where 'systemctl status' doesn't do a good job
-### - specify a custom command to check / validate the configuration of the service (c.f. --test_conf)
-###   for example, the command to check the configuration of nginx is "nginx -t"
-
-#=================================================
 # START SYSTEMD SERVICE
 #=================================================
 ynh_script_progression --message="Starting a systemd service..." --time --weight=1
 
-### `ynh_systemd_action` is used to start a systemd service for an app.
-### Only needed if you have configure a systemd service
-### If you're not using these lines:
-###		- Remove the section "STOP SYSTEMD SERVICE" and "START SYSTEMD SERVICE" in the backup script
-###		- As well as the section "START SYSTEMD SERVICE" in the restore script
-###		- As well as the section"STOP SYSTEMD SERVICE" and "START SYSTEMD SERVICE" in the upgrade script
-###		- And the section "STOP SYSTEMD SERVICE" and "START SYSTEMD SERVICE" in the change_url script
-
 # Start a systemd service
-ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
-
-#=================================================
-# SETUP FAIL2BAN
-#=================================================
-
-# There is no fail2ban configuration, there is no login ...
-
-# ynh_script_progression --message="Configuring fail2ban..." --time --weight=1
-
-# Create a dedicated fail2ban config
-# ynh_add_fail2ban_config --logpath="/var/log/nginx/${domain}-error.log" --failregex="Regex to match into the log for a failed login"
-
-#=================================================
-# SETUP SSOWAT
-#=================================================
-ynh_script_progression --message="Configuring SSOwat..." --time --weight=1
-
-# Make app public if necessary
-if [ $is_public -eq 1 ]
-then
-	# unprotected_uris allows SSO credentials to be passed anyway.
-	ynh_app_setting_set --app=$app --key=unprotected_uris --value="/"
-fi
-
-
-
-#=================================================
-# RELOAD NGINX
-#=================================================
-ynh_script_progression --message="Reloading nginx web server..." --time --weight=1
-
-ynh_systemd_action --service_name=nginx --action=reload
+ynh_systemctl --service=$app --action="start" --log_path="/var/log/$app/$app.log"
 
 #=================================================
 # END OF SCRIPT
