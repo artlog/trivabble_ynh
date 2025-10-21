@@ -42,7 +42,7 @@ ynh_script_progression --message="Stopping and removing the systemd service..." 
 ynh_config_remove_systemd
 
 #=================================================
- REMOVE DEPENDENCIES
+# REMOVE DEPENDENCIES
 #=================================================
 ynh_script_progression --message="Removing dependencies..." --time --weight=1
 

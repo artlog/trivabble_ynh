@@ -11,20 +11,21 @@ ynh_script_progression --message="Setting up source files..." --time --weight=1
 
 ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 
-
 # temporary intermediate directory since it contains more files than needed
-build_dest_dir=$trivabble_git_tag.tmp_src
+build_dest_dir=$(mktemp --directory --tmpdir="/tmp")
 
-# Download, check integrity, uncompress and patch the source from app.src
-ynh_setup_source --dest_dir="$build_dest_dir"
-
-if [[ -d "$build_dest_dir" ]]
+if [[ -n "$build_dest_dir" ]] && [[ -d "$build_dest_dir" ]]
 then
+    # Download, check integrity, uncompress and patch the source from app.src
+    ynh_setup_source --dest_dir="$build_dest_dir"
+
     # required to build i10n client support
     pushd "$build_dest_dir"
     ynh_script_progression --message="Start building from $(pwd) " --time --weight=1
     make
     popd
+else
+    ynh_die "Failed to create a directory for build '$build_dest_dir'"
 fi
 
 # check that l10n build succeeded
