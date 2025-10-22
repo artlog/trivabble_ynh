@@ -6,7 +6,7 @@ id = "trivabble"
 description.en = "a network Scrabble® game free play not enforcing rules"
 description.fr = "un jeu de Scrabble® en jeu libre, à l'utilisateur d'appliquer les règles."
 
-version = "prod-v20210805~ynh8"
+version = "2021.08.05~ynh8"
 license = "AGPL-3.0-or-later"
 
 [upstream]
