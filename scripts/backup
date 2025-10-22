@@ -21,14 +21,14 @@ db_name=$(ynh_app_setting_get --app=$app --key=db_name)
 #=================================================
 # STOP SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Stopping a systemd service..." --time --weight=1
+ynh_script_progression "Stopping a systemd service..." --time --weight=1
 
 ynh_systemctl --service=$app --action="stop" --log_path="/var/log/$app/$app.log"
 
 #=================================================
 # BACKUP THE APP MAIN DIR
 #=================================================
-ynh_script_progression --message="Backing up the main app configuration " --time --weight=1
+ynh_script_progression "Backing up the main app configuration " --time --weight=1
 
 # if we want to save only config...
 # ynh_backup "$final_path/server/games.backup.json"
@@ -40,7 +40,7 @@ ynh_backup "$final_path"
 #=================================================
 # BACKUP THE NGINX CONFIGURATION
 #=================================================
-ynh_script_progression --message="Backing up nginx web server configuration..." --time --weight=1
+ynh_script_progression "Backing up nginx web server configuration..." --time --weight=1
 
 ynh_backup "/etc/nginx/conf.d/$domain.d/$app.conf"
 
@@ -48,7 +48,7 @@ ynh_backup "/etc/nginx/conf.d/$domain.d/$app.conf"
 # BACKUP THE MYSQL DATABASE
 #=================================================
 # no SQL like database, embeded data file
-#ynh_script_progression --message="Backing up the MySQL database..." --time --weight=1
+#ynh_script_progression "Backing up the MySQL database..." --time --weight=1
 
 #ynh_mysql_dump_db --database="$db_name" > db.sql
 
@@ -57,7 +57,7 @@ ynh_backup "/etc/nginx/conf.d/$domain.d/$app.conf"
 #=================================================
 
 # no fail2ban
-#ynh_script_progression --message="Backing up fail2ban configuration..." --time --weight=1
+#ynh_script_progression "Backing up fail2ban configuration..." --time --weight=1
 
 #ynh_backup "/etc/fail2ban/jail.d/$app.conf"
 #ynh_backup "/etc/fail2ban/filter.d/$app.conf"
@@ -67,14 +67,14 @@ ynh_backup "/etc/nginx/conf.d/$domain.d/$app.conf"
 #=================================================
 # BACKUP LOGROTATE
 #=================================================
-ynh_script_progression --message="Backing up logrotate configuration..." --time --weight=1
+ynh_script_progression "Backing up logrotate configuration..." --time --weight=1
 
 ynh_backup "/etc/logrotate.d/$app"
 
 #=================================================
 # BACKUP SYSTEMD
 #=================================================
-ynh_script_progression --message="Backing up systemd configuration..." --time --weight=1
+ynh_script_progression "Backing up systemd configuration..." --time --weight=1
 
 ynh_backup "/etc/systemd/system/$app.service"
 
@@ -88,7 +88,7 @@ ynh_backup "/etc/systemd/system/$app.service"
 #=================================================
 # START SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Starting a systemd service..." --time --weight=1
+ynh_script_progression "Starting a systemd service..." --time --weight=1
 
 ynh_systemctl --service=$app --action="start" --log_path="/var/log/$app/$app.log"
 
@@ -96,4 +96,4 @@ ynh_systemctl --service=$app --action="start" --log_path="/var/log/$app/$app.log
 # END OF SCRIPT
 #=================================================
 
-ynh_script_progression --message="Backup script completed for $app. (YunoHost will then actually copy those files to the archive)." --time --last
+ynh_script_progression "Backup script completed for $app. (YunoHost will then actually copy those files to the archive)." --time --last

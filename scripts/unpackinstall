@@ -3,7 +3,7 @@
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
-ynh_script_progression --message="Setting up source files..." --time --weight=1
+ynh_script_progression "Setting up source files..." --time --weight=1
 
 ### `ynh_setup_source` is used to install an app from a zip or tar.gz file,
 ### downloaded from an upstream source, like a git repository.
@@ -21,7 +21,7 @@ then
 
     # required to build i10n client support
     pushd "$build_dest_dir"
-    ynh_script_progression --message="Start building from $(pwd) " --time --weight=1
+    ynh_script_progression "Start building from $(pwd) " --time --weight=1
     PORT=$port make
     popd
 else
