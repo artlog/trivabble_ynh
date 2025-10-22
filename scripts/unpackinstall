@@ -47,11 +47,7 @@ PROD_SERVER_DIR=$final_path/server
 mkdir -p $PROD_PUBLIC_DIR
 mkdir -p $PROD_SERVER_DIR
 
-# use rsync ... but not provided by default install
-# if added in resources.apt it tries to build trivabble ( why ? ) then fail.
-# HACK
-_ynh_apt_install rsync
-
+# this is where we needed rsync
 rsync -avp --delete --exclude 'config.js' "$WORKING_DIRECTORY/public/" "$PROD_PUBLIC_DIR/"
 rsync -avp --delete --exclude 'config.js' "$WORKING_DIRECTORY/server/" "$PROD_SERVER_DIR/"
 

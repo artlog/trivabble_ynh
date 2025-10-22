@@ -47,6 +47,9 @@ ram.runtime = "50M"
 
 [resources]
 
+    [resources.apt]
+    packages = ["rsync"]
+
     [resources.system_user]
 
     [resources.sources.main]
