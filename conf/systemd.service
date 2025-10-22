@@ -9,6 +9,7 @@ Group=__APP__
 Environment=NODE_ENV=production
 Environment=NODE_CONFIG_DIR=__INSTALL_DIR__/config
 Environment="PATH=__PATH_WITH_NODEJS__"
+Environment=TRIVABBLE_PORT=__PORT__
 ExecStart=__NODEJS_DIR__/node trivabble-server.js >> /var/log/__APP__/__APP__.log 2>&1
 WorkingDirectory=__INSTALL_DIR__/server
 
