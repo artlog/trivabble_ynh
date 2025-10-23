@@ -9,7 +9,6 @@ source /usr/share/yunohost/helpers
 
 path_url="$path"
 admin=$(ynh_app_setting_get --app=$app --key=admin)
-final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 
 username=${username:-$app}
 groupname=${groupname:-$app}
@@ -37,13 +36,13 @@ ynh_script_progression "Upgrading source files..."
 # Download, check integrity, uncompress and patch the source from manifest.toml
 source unpackinstall
 
-# don't TWEAK trivabble client configuration $final_path/public/config.js, keep as it is
+# don't TWEAK trivabble client configuration $install_dir/public/config.js, keep as it is
 
-chown -R root $final_path
+chown -R root $install_dir
 
 # Set permissions to app files
-chown -R www-data:www-data $final_path
-chown -R $username:$groupname $final_path/server
+chown -R www-data:www-data $install_dir
+chown -R $username:$groupname $install_dir/server
 
 #=================================================
 # UPDATE A CONFIG FILE

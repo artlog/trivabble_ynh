@@ -28,12 +28,11 @@ ynh_script_progression "Loading settings..." --time --weight=1
 
 domain=$(ynh_app_setting_get --app=$app --key=domain)
 path_url=$(ynh_app_setting_get --app=$app --key=path)
-final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 
 restore_config_only=No
-if [[ -d $final_path ]]
+if [[ -d $install_dir ]]
 then
-    ynh_print_info "installation directory $final_path already exists ! restoring only config"
+    ynh_print_info "installation directory $install_dir already exists ! restoring only config"
     restore_config_only=Yes
 fi
 
@@ -62,11 +61,11 @@ if [[ "$restore_config_only" == "Yes" ]]
 then
     # was for config only
     ynh_print_info "Restoring only configuration restore_config_only=$restore_config_only"
-    ynh_restore "$final_path/public/config.js"
-    ynh_restore "$final_path/server/games.backup.json"
+    ynh_restore "$install_dir/public/config.js"
+    ynh_restore "$install_dir/server/games.backup.json"
 else
     # restore full path
-    ynh_restore "$final_path"
+    ynh_restore "$install_dir"
 fi
 
 #=================================================
@@ -82,13 +81,13 @@ ynh_system_user_create --username=$username
 #=================================================
 
 # Restore permissions on app files
-chown -R root $final_path
+chown -R root $install_dir
 # required x access to enter it as trivabble system user for node
-chmod 755 $final_path
+chmod 755 $install_dir
 
 # Set permissions to app files
-chown -R www-data:www-data $final_path
-chown -R $username:$groupname $final_path/server
+chown -R www-data:www-data $install_dir
+chown -R $username:$groupname $install_dir/server
 
 #=================================================
 # RESTORE SYSTEMD

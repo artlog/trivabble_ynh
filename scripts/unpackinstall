@@ -9,7 +9,7 @@ ynh_script_progression "Setting up source files..." --time --weight=1
 ### downloaded from an upstream source, like a git repository.
 ### `ynh_setup_source` use the file conf/app.src
 
-ynh_app_setting_set --app=$app --key=final_path --value=$final_path
+ynh_app_setting_set --app=$app --key=install_dir --value=$install_dir
 
 # temporary intermediate directory since it contains more files than needed
 build_dest_dir=$(mktemp --directory --tmpdir="/tmp")
@@ -36,13 +36,13 @@ if [[ ! -d $build_dest_dir/public/l10n/js ]] ; then
     ynh_die "expected public js directory for i10n not found in $(pwd)/$build_dest_dir"
 fi
 
-# deliver it to $final_path ( hack copy subpart of bin/upgrade-prod.sh )
+# deliver it to $install_dir ( hack copy subpart of bin/upgrade-prod.sh )
 
 echo "Sending to production..."
 
 WORKING_DIRECTORY=$build_dest_dir
-PROD_PUBLIC_DIR=$final_path/public
-PROD_SERVER_DIR=$final_path/server
+PROD_PUBLIC_DIR=$install_dir/public
+PROD_SERVER_DIR=$install_dir/server
 
 mkdir -p $PROD_PUBLIC_DIR
 mkdir -p $PROD_SERVER_DIR
@@ -54,4 +54,4 @@ rsync -avp --delete --exclude 'config.js' "$WORKING_DIRECTORY/server/" "$PROD_SE
 rm -rf $build_dest_dir
 
 # Download, check integrity, uncompress and patch the source from app.src
-# ynh_setup_source --dest_dir="$final_path"
+# ynh_setup_source --dest_dir="$install_dir"
