@@ -11,6 +11,9 @@ path_url="$path"
 admin=$(ynh_app_setting_get --app=$app --key=admin)
 final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 
+username=${username:-$app}
+groupname=${groupname:-$app}
+
 #=================================================
 # STOP SYSTEMD SERVICE
 #=================================================
@@ -24,7 +27,7 @@ ynh_systemctl --service="$app" --action="stop"
 ynh_script_progression "Ensuring downward compatibility..."
 
 # If install_dir doesn't exist, create it
-# ynh_app_setting_set_default --key=install_dir --value="/var/www/$app"
+ynh_app_setting_set_default --key=install_dir --value="/var/www/$app"
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
@@ -34,18 +37,20 @@ ynh_script_progression "Upgrading source files..."
 # Download, check integrity, uncompress and patch the source from manifest.toml
 source unpackinstall
 
+# don't TWEAK trivabble client configuration $final_path/public/config.js, keep as it is
+
+chown -R root $final_path
+
+# Set permissions to app files
+chown -R www-data:www-data $final_path
+chown -R $username:$groupname $final_path/server
+
 #=================================================
 # UPDATE A CONFIG FILE
 #=================================================
 ynh_script_progression "Updating $app's configuration files..."
 
 # ynh_config_add --template="some_config_file" --destination="$install_dir/some_config_file"
-
-# FIXME: this should be handled by the core in the future
-### You may need to use chmod 600 instead of 400,
-### for example if the app is expected to be able to modify its own config
-chmod 400 "$install_dir/some_config_file"
-chown "$app:$app" "$install_dir/some_config_file"
 
 #=================================================
 # REAPPLY SYSTEM CONFIGURATION

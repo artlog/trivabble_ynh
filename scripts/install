@@ -12,11 +12,8 @@ source /usr/share/yunohost/helpers
 final_path=/var/www/$app
 test ! -e "$final_path" || ynh_die "This path already contains a folder"
 
-# because __FINALPATH__ in nginx.conf
-finalpath=${final_path}
 install_dir=${final_path}
-# assuming $install_dir == $finalpath in systemd.service ?
-echo "$finalpath == $install_dir ?"
+# assuming $install_dir == $finalpath in systemd.service
 username=${username:-$app}
 groupname=${groupname:-$app}
 

@@ -1,3 +1,4 @@
+
 packaging_format = 2
 
 name = "Trivabble"
@@ -6,7 +7,7 @@ id = "trivabble"
 description.en = "a network Scrabble® game free play not enforcing rules"
 description.fr = "un jeu de Scrabble® en jeu libre, à l'utilisateur d'appliquer les règles."
 
-version = "2021.08.05~ynh9"
+version = "2021.08.05~ynh10"
 license = "AGPL-3.0-or-later"
 
 [upstream]
@@ -23,8 +24,8 @@ architectures = "all"
 yunohost = ">= 12.0.0"
 helpers_version = "2.1"
 multi_instance = false
-ldap = false
-sso = false
+ldap = "not_relevant"
+sso = "not_relevant"
 
 disk = "50M"
 ram.build = "50M"
