@@ -1,8 +1,6 @@
 #!/bin/bash
 
 #=================================================
-# GENERIC START
-#=================================================
 # IMPORT GENERIC HELPERS
 #=================================================
 
@@ -23,15 +21,10 @@ username=${username:-$app}
 groupname=${groupname:-$app}
 
 #=================================================
-# MANAGE SCRIPT FAILURE
+# INITIALIZE AND STORE SETTINGS
 #=================================================
 
-ynh_clean_setup () {
-	### Remove this function if there's nothing to clean before calling the remove script.
-	true
-}
-# Exit if an error occurs during the execution of the script
-ynh_abort_if_errors
+# no custom settings yet
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
@@ -52,12 +45,17 @@ window.TrivabbleConf = {
 }
 EOF
 
-#=================================================
-# NGINX CONFIGURATION
-#=================================================
-ynh_script_progression "Configuring nginx web server..." --time --weight=1
+chown -R root $final_path
 
-# Create a dedicated nginx config conf/nginx.conf
+# Set permissions to app files
+chown -R www-data:www-data $final_path
+chown -R $username:$groupname $final_path/server
+
+#=================================================
+# SYSTEM CONFIGURATION
+#=================================================
+ynh_script_progression "Adding system configurations related to $app..."
+
 ynh_config_add_nginx
 
 ynh_config_add_systemd
@@ -68,28 +66,15 @@ mkdir -p "/var/log/$app"
 ynh_config_add_logrotate
 
 #=================================================
-# SECURE FILES AND DIRECTORIES
-#=================================================
-
-### For security reason, any app should set the permissions to root: before anything else.
-### Then, if write authorization is needed, any access should be given only to directories
-### that really need such authorization.
-chown -R root $final_path
-
-# Set permissions to app files
-chown -R www-data:www-data $final_path
-chown -R $username:$groupname $final_path/server
-
-#=================================================
 # START SYSTEMD SERVICE
 #=================================================
-ynh_script_progression "Starting a systemd service..." --time --weight=1
+ynh_script_progression "Starting $app's systemd service..."
 
 # Start a systemd service
-ynh_systemctl --service=$app --action="start" --log_path="/var/log/$app/$app.log"
+ynh_systemctl --service="$app" --action="start"
 
 #=================================================
 # END OF SCRIPT
 #=================================================
 
-ynh_script_progression "Installation of $app completed" --time --last
+ynh_script_progression "Installation of $app completed"
